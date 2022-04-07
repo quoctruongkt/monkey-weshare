@@ -34,6 +34,7 @@ function App() {
   useEffect(() => {
     const roomId = getQueryVariable("roomid");
     const name = getQueryVariable("name");
+    console.log(getQueryVariable("roomid"));
     setRoomId(roomId);
     setName(name);
     console.log(roomId);

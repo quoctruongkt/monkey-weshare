@@ -27,7 +27,6 @@ socketIo.on("connection", (socket) => {
 
   socket.on("create", function (room) {
     console.log(socket.id + " joined to " + room);
-    // console.log(room);
     listUser.push({
       socketId: socket.id,
       name: auth.name,
@@ -36,6 +35,21 @@ socketIo.on("connection", (socket) => {
     });
     socket.join(room);
     socketIo.to(room).emit("listUser", { listUser });
+  });
+
+  socket.on("changedRank", function (data) {
+    console.log(data);
+    if (data) {
+      listUser = listUser.filter((value) => value.socketId != socket.id);
+      listUser.push({
+        socketId: socket?.id,
+        roomId: data?.roomId,
+        name: data?.name,
+        point: data?.point,
+      });
+      console.log(listUser);
+      socketIo.to(data.roomId).emit("listUser", { listUser });
+    }
   });
 
   socket.on("sendDataClient", function (data) {
