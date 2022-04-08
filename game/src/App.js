@@ -226,26 +226,18 @@ function App() {
   const messagesEnd = useRef();
 
   var query = window.location.search.substring(1);
-  console.log(query);
 
   function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
-    console.log(query); //"app=article&act=news_content&aid=160990"
     var vars = query.split("&");
-    console.log(vars); //[ 'app=article', 'act=news_content', 'aid=160990' ]
     for (var i = 0; i < vars.length; i++) {
       var pair = vars[i].split("=");
-      console.log(pair); //[ 'app', 'article' ][ 'act', 'news_content' ][ 'aid', '160990' ]
       if (pair[0] == variable) {
         return pair[1];
       }
     }
     return false;
   }
-  useEffect(() => {
-    console.log(roomId);
-    console.log(name);
-  }, [roomId, name]);
 
   useEffect(() => {
     const roomId = getQueryVariable("roomid");
@@ -255,7 +247,7 @@ function App() {
 
     socketRef.current = socketIOClient.connect(host, {
       auth: {
-        name: name,
+        name: getQueryVariable("name"),
       },
     });
 
@@ -266,17 +258,12 @@ function App() {
     socketRef.current.on("setUser", (data) => {
       console.log(data);
     });
-    socketRef.current.on("changedRank", (data) => {
-      console.log(data);
-    });
+    // socketRef.current.on("changedRank", (data) => {
+    //   console.log(data);
+    // });
 
     socketRef.current.on("listUser", (data) => {
-
-      console.log("list user", data);
       setListUser(data.listUser);
-
-      console.log(data.listUser[1]?.point);
-
     });
 
     socketRef.current.emit("create", `room${roomId}`);
@@ -291,17 +278,12 @@ function App() {
         console.log("disconnect");
       });
     };
-  }, [point]);
-
-  // useEffect(() => {
-  //   console.log(listUser);
-  //   listUser?.map((value) => {
-  //     console.log(value.name);
-  //   });
-  // }, [listUser])
+  }, []);
 
   useEffect(() => {
-    updatePoint(heroCoins);
+    if (roomId && name) {
+      updatePoint(heroCoins);
+    }
   }, [heroCoins]);
 
   const updatePoint = (currentPoint) => {
@@ -314,8 +296,11 @@ function App() {
     };
     setPoint(point);
   };
+
   useEffect(() => {
-    socketRef.current.emit("changedRank", point);
+    if (roomId && name) {
+      socketRef.current.emit("changedRank", point);
+    }
   }, [point]);
 
   const sendMessage = () => {
@@ -471,7 +456,6 @@ function App() {
                   </li>
                 );
               })}
-
           </ol>
         </div>
       )}
