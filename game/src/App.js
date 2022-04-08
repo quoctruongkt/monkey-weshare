@@ -448,7 +448,7 @@ function App() {
           </h1>
           <ol>
             {listUser
-              ?.sort((a, b) => (a.point > b.point ? 1 : -1))
+              ?.sort((a, b) => (a.point < b.point ? 1 : -1))
               ?.map((user, i) => {
                 return (
                   <li key={i}>
