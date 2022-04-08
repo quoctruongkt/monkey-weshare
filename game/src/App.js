@@ -218,6 +218,7 @@ function App() {
   const [roomId, setRoomId] = useState();
   const [name, setName] = useState();
   const [point, setPoint] = useState();
+  const [listUser, setListUser] = useState();
   const socketRef = useRef();
   const messagesEnd = useRef();
 
@@ -267,7 +268,8 @@ function App() {
     });
 
     socketRef.current.on("listUser", (data) => {
-      console.log(data);
+      console.log("list user", data);
+      setListUser(data.listUser);
     });
 
     socketRef.current.emit("create", `room${roomId}`);
@@ -282,7 +284,14 @@ function App() {
         console.log("disconnect");
       });
     };
-  }, []);
+  }, [point]);
+
+  // useEffect(() => {
+  //   console.log(listUser);
+  //   listUser?.map((value) => {
+  //     console.log(value.name);
+  //   });
+  // }, [listUser])
 
   const updatePoint = () => {
     console.log(name);
@@ -435,7 +444,7 @@ function App() {
       window.removeEventListener("hero-coin", heroCoinEventListener);
     };
   }, [setCharacterName, setMessages]);
-  console.log(gameMenuItems);
+  console.log(listUser);
   return (
     <div>
       {gameMenuItems.length == 0 && (
@@ -445,9 +454,15 @@ function App() {
             Leader Board
           </h1>
           <ol>
-            <li>Jerry Wood</li>
-            <li>Brandon Barnes</li>
-           
+            {listUser
+              ?.sort((a, b) => (a.point > b.point ? 1 : -1))
+              ?.map((user, i) => {
+                return (
+                  <li key={i}>
+                    {user.name} <span> {user.point}</span>
+                  </li>
+                );
+              })}
           </ol>
         </div>
       )}
