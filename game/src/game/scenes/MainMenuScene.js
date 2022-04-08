@@ -12,9 +12,8 @@ export default class MainMenuScene extends Scene {
     create() {
         const { width: gameWidth, height: gameHeight } = this.cameras.main;
 
-        this.add.image(gameWidth / 2, Math.ceil(gameHeight / 10), 'game_logo')
-            .setOrigin(0.5, 0)
-            .setDepth(1);
+        this.add.image(gameWidth / 2, Math.ceil(gameHeight / 50), 'game_logo')
+        .setOrigin(0.5, 0.2)
 
         const scale = Math.max(Math.ceil(gameWidth / 480), Math.ceil(gameHeight / 216));
         this.add.image(0, 0, 'main_menu_background')
