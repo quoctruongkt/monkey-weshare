@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   dialogMessage: ({ multiplier }) => ({
-    fontFamily: '"Press Start 2P"',
+    // fontFamily: '"Press Start 2P"',
     fontSize: `${6 * multiplier}px`,
     textTransform: "uppercase",
   }),

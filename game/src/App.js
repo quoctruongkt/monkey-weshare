@@ -21,6 +21,7 @@ import ReactAudioPlayer from "react-audio-player";
 import apple from "./game/assets/audio/apple.mp3";
 import volume from "./game/assets/images/volume.png";
 import trophy from "./game/assets/images/trophy.png";
+import Story from "./game/Story";
 
 const { width, height, multiplier } = calculateGameSize();
 const host = "http://localhost:3000";
@@ -116,6 +117,7 @@ const dialogs = {
       message: "Quả gì khi chín đỏ tươi. Ăn vào ngọt mát, da thời đẹp hơn?",
       answer: "apple",
       audio: "apple.mp3",
+      story: "apple",
     },
   ],
   watermelon: [
@@ -267,7 +269,7 @@ function App() {
     });
 
     socketRef.current.on("listUser", (data) => {
-      console.log(data.listUser[1]?.point);
+      console.log(data);
     });
 
     socketRef.current.emit("create", `room${roomId}`);
@@ -435,7 +437,7 @@ function App() {
       window.removeEventListener("hero-coin", heroCoinEventListener);
     };
   }, [setCharacterName, setMessages]);
-  console.log(gameMenuItems);
+
   return (
     <div>
       {gameMenuItems.length == 0 && (
@@ -530,6 +532,23 @@ function App() {
             }}
             position={gameMenuPosition}
             onSelected={handleMenuItemSelected}
+          />
+        )}
+        {true && (
+          <Story
+            onDone={handleMessageIsDone}
+            characterName={characterName}
+            messages={messages}
+            gameSize={{
+              width,
+              height,
+              multiplier,
+            }}
+            setHeroCoins={setHeroCoins}
+            setHeroHealthStates={setHeroHealthStates}
+            question={arrQuestion[questionIndex]}
+            setQuestionIndex={setQuestionIndex}
+            heroHealthStates={heroHealthStates}
           />
         )}
       </div>

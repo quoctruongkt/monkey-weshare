@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import dungAudio from "./assets/audio/dung.mp3";
 import saiAudio from "./assets/audio/sai.wav";
+import micro from "./assets/images/micro.png";
 
 // Images
 import dialogBorderBox from "./assets/images/dialog_borderbox.png";
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     const messageBoxHeight = Math.ceil((height / 3.5) * multiplier);
     return {
       imageRendering: "pixelated",
-      fontFamily: '"Press Start 2P"',
+      // fontFamily: '"Press Start 2P"',
       textTransform: "uppercase",
       backgroundColor: "#e2b27e",
       border: "solid",
@@ -169,9 +170,12 @@ const DialogBox = ({
                   className={classes.input}
                 />
                 <button type="submit" className={classes.buttonSubmit}>
-                  Kiểm tra
+                  Kiểm tra +5
                 </button>
               </div>
+              <button type="button">
+                <img src={micro} /> +5
+              </button>
             </form>
           ) : (
             <div>{results}</div>
