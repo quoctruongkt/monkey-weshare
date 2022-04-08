@@ -35,12 +35,12 @@ const useStyles = makeStyles((theme) => ({
     };
   },
   dialogTitle: ({ multiplier }) => ({
-    fontSize: `${8 * multiplier}px`,
+    fontSize: `${16 * multiplier}px`,
     marginBottom: `${6 * multiplier}px`,
     fontWeight: "bold",
   }),
   dialogFooter: ({ multiplier }) => ({
-    fontSize: `${8 * multiplier}px`,
+    fontSize: `${12 * multiplier}px`,
     cursor: "pointer",
     textAlign: "end",
     position: "absolute",
@@ -48,8 +48,16 @@ const useStyles = makeStyles((theme) => ({
     bottom: `${6 * multiplier}px`,
   }),
   buttonSubmit: ({ multiplier }) => ({
-    fontSize: `${8 * multiplier}px`,
+    fontSize: `${16 * multiplier}px`,
     marginLeft: "20px",
+    fontSize: "32px",
+    marginLeft: "20px",
+    outline: "none",
+    border: "none",
+    borderRadius: "5px",
+    padding: "5px",
+    fontWeight: "bold",
+    color: "darkblue",
   }),
   input: ({ multiplier }) => ({
     fontSize: `${8 * multiplier}px`,
@@ -167,6 +175,15 @@ const DialogBox = ({
                   {...register("textInput")}
                   placeholder="Nhập từ vừa nghe được"
                   className={classes.input}
+                  style={{
+                    outline: "none",
+                    border: "none",
+                    borderRadius: "5px",
+                    height: "50px",
+                    fontWeight: "bolder",
+                    color: "tomato",
+                    textAlign: "center",
+                    fontSize: "25px",}}
                 />
                 <button type="submit" className={classes.buttonSubmit}>
                   Kiểm tra
