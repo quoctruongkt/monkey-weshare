@@ -299,7 +299,7 @@ function App() {
   }, [point]);
 
   setTimeout(() => {
-    updatePoint();
+    // updatePoint();
   }, 10000);
 
   const sendMessage = () => {
@@ -447,9 +447,7 @@ function App() {
           <ol>
             <li>Jerry Wood</li>
             <li>Brandon Barnes</li>
-            <li>Raymond Knight</li>
-            <li>Trevor McCormick</li>
-            <li>Andrew Fox</li>
+           
           </ol>
         </div>
       )}
