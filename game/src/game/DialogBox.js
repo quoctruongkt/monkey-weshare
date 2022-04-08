@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import dungAudio from "./assets/audio/dung.mp3";
 import saiAudio from "./assets/audio/sai.wav";
+import micro from "./assets/images/micro.png";
 
 // Images
 import dialogBorderBox from "./assets/images/dialog_borderbox.png";
@@ -183,10 +184,15 @@ const DialogBox = ({
                     fontWeight: "bolder",
                     color: "tomato",
                     textAlign: "center",
-                    fontSize: "25px",}}
+                    fontSize: "25px",
+                  }}
                 />
                 <button type="submit" className={classes.buttonSubmit}>
-                  Kiểm tra
+                  Kiểm tra +5
+                </button>
+                <button type="button" className={classes.buttonSubmit}>
+                  <img src={micro} height={25} />
+                  +5
                 </button>
               </div>
             </form>
