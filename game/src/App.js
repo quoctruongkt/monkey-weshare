@@ -267,7 +267,7 @@ function App() {
     });
 
     socketRef.current.on("listUser", (data) => {
-      console.log(data);
+      console.log(data.listUser[1]?.point);
     });
 
     socketRef.current.emit("create", `room${roomId}`);
@@ -284,11 +284,15 @@ function App() {
     };
   }, []);
 
-  const updatePoint = () => {
+  useEffect(() => {
+    updatePoint(heroCoins);
+  }, [heroCoins]);
+
+  const updatePoint = (currentPoint) => {
     console.log(name);
     let point = {
       id: id,
-      point: Math.floor(Math.random() * (100 - 10 + 1) + 10),
+      point: currentPoint,
       roomId: `room${roomId}`,
       name: name,
     };
@@ -297,10 +301,6 @@ function App() {
   useEffect(() => {
     socketRef.current.emit("changedRank", point);
   }, [point]);
-
-  setTimeout(() => {
-    updatePoint();
-  }, 10000);
 
   const sendMessage = () => {
     if (message !== null) {
