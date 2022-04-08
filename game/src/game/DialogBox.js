@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import dungAudio from "./assets/audio/dung.mp3";
 import saiAudio from "./assets/audio/sai.wav";
 import micro from "./assets/images/micro.png";
+import unmic from "./assets/images/unmic.png";
+import useSpeechToText from "react-hook-speech-to-text";
 
 // Images
 import dialogBorderBox from "./assets/images/dialog_borderbox.png";
@@ -76,14 +78,27 @@ const DialogBox = ({
   setQuestionIndex,
   heroHealthStates,
 }) => {
+  const {
+    error,
+    interimResult,
+    isRecording,
+    results,
+    startSpeechToText,
+    stopSpeechToText,
+  } = useSpeechToText({
+    continuous: true,
+    useLegacyResults: false,
+  });
+
   const { register, handleSubmit } = useForm();
   const { width, height, multiplier } = gameSize;
 
   const [currentMessage, setCurrentMessage] = useState(0);
   const [messageEnded, setMessageEnded] = useState(false);
   const [forceShowFullMessage, setForceShowFullMessage] = useState(false);
-  const [results, setResults] = useState("");
+  const [result, setResults] = useState("");
   const [urlAudio, setUrlAudio] = useState("");
+  const [mic, setMic] = useState(true);
   const classes = useStyles({
     width,
     height,
@@ -147,6 +162,16 @@ const DialogBox = ({
     }
   }, []);
 
+  useEffect(() => {
+    console.log(results[0]?.transcript?.toLowerCase());
+    if (results[0]?.transcript?.toLowerCase() == messages[0].answer) {
+      setHeroCoins((pre) => pre + 5);
+      setUrlAudio(dungAudio);
+      setMic(false);
+      stopSpeechToText();
+    }
+  }, [results]);
+
   return (
     <div className={classes.dialogWindow}>
       <ReactAudioPlayer
@@ -168,7 +193,7 @@ const DialogBox = ({
               setMessageEnded(true);
             }}
           />
-          {!results ? (
+          {!result ? (
             <form onSubmit={handleSubmit(onSubmit)}>
               <div style={{ marginTop: "30px" }}>
                 <input
@@ -190,14 +215,20 @@ const DialogBox = ({
                 <button type="submit" className={classes.buttonSubmit}>
                   Kiểm tra +5
                 </button>
-                <button type="button" className={classes.buttonSubmit}>
-                  <img src={micro} height={25} />
-                  +5
-                </button>
+                {mic && (
+                  <button
+                    type="button"
+                    className={classes.buttonSubmit}
+                    onClick={isRecording ? stopSpeechToText : startSpeechToText}
+                  >
+                    <img src={isRecording ? unmic : micro} height={25} />
+                    {isRecording ? "" : "+5"}
+                  </button>
+                )}
               </div>
             </form>
           ) : (
-            <div>{results}</div>
+            <div>{result}</div>
           )}
         </>
       ) : (
