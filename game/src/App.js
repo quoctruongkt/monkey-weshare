@@ -271,12 +271,10 @@ function App() {
     });
 
     socketRef.current.on("listUser", (data) => {
-
       console.log("list user", data);
       setListUser(data.listUser);
 
       console.log(data.listUser[1]?.point);
-
     });
 
     socketRef.current.emit("create", `room${roomId}`);
@@ -463,7 +461,7 @@ function App() {
           </h1>
           <ol>
             {listUser
-              ?.sort((a, b) => (a.point > b.point ? 1 : -1))
+              ?.sort((a, b) => (a.point < b.point ? 1 : -1))
               ?.map((user, i) => {
                 return (
                   <li key={i}>
@@ -471,7 +469,6 @@ function App() {
                   </li>
                 );
               })}
-
           </ol>
         </div>
       )}
