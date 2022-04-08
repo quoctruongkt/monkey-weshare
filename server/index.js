@@ -19,35 +19,44 @@ const users = [
 const getUser = (id) => users[id];
 let listUser = [];
 socketIo.on("connection", (socket) => {
-  console.log(socket.handshake.auth);
   const auth = socket.handshake.auth;
   console.log("New client connected" + socket.id);
 
   socket.emit("getId", socket.id);
 
   socket.on("create", function (room) {
-    console.log(socket.id + " joined to " + room);
+    console.log({
+      socketId: socket.id,
+      name: auth.name,
+      roomId: room,
+      point: 0,
+    });
+    console.log("list old user");
+    console.log(listUser);
     listUser.push({
       socketId: socket.id,
       name: auth.name,
       roomId: room,
       point: 0,
     });
+    console.log("list user");
+    console.log(listUser);
     socket.join(room);
     socketIo.to(room).emit("listUser", { listUser });
   });
 
   socket.on("changedRank", function (data) {
+    console.log("change rank");
     console.log(data);
     if (data) {
-      listUser = listUser.filter((value) => value.socketId != socket.id);
+      let temp = listUser.filter((value) => value.socketId != socket.id);
+      listUser = temp;
       listUser.push({
         socketId: socket?.id,
         roomId: data?.roomId,
         name: data?.name,
         point: data?.point,
       });
-      console.log(listUser);
       socketIo.to(data.roomId).emit("listUser", { listUser });
     }
   });
