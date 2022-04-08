@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import dungAudio from "./assets/audio/dung.mp3";
 import saiAudio from "./assets/audio/sai.wav";
 import micro from "./assets/images/micro.png";
+import unmic from "./assets/images/unmic.png";
+import useSpeechToText from "react-hook-speech-to-text";
 
 // Images
 import dialogBorderBox from "./assets/images/dialog_borderbox.png";
@@ -76,14 +78,28 @@ const DialogBox = ({
   setQuestionIndex,
   heroHealthStates,
 }) => {
+  const {
+    error,
+    interimResult,
+    isRecording,
+    results,
+    startSpeechToText,
+    stopSpeechToText,
+  } = useSpeechToText({
+    continuous: true,
+    useLegacyResults: false,
+  });
+
   const { register, handleSubmit } = useForm();
   const { width, height, multiplier } = gameSize;
 
   const [currentMessage, setCurrentMessage] = useState(0);
   const [messageEnded, setMessageEnded] = useState(false);
   const [forceShowFullMessage, setForceShowFullMessage] = useState(false);
-  const [results, setResults] = useState("");
+  const [result, setResults] = useState("");
   const [urlAudio, setUrlAudio] = useState("");
+  const [mic, setMic] = useState(true);
+  const [text, setText] = useState("");
   const classes = useStyles({
     width,
     height,
@@ -147,6 +163,22 @@ const DialogBox = ({
     }
   }, []);
 
+  useEffect(() => {
+    setText(results[results?.length - 1]?.transcript);
+    if (
+      results[results?.length - 1]?.transcript?.toLowerCase() ==
+      messages[0].answer
+    ) {
+      console.log(results[0]?.transcript?.toLowerCase());
+      setHeroCoins((pre) => pre + 5);
+      setUrlAudio(dungAudio);
+      setMic(false);
+      stopSpeechToText();
+    } else {
+      stopSpeechToText();
+    }
+  }, [results]);
+
   return (
     <div className={classes.dialogWindow}>
       <ReactAudioPlayer
@@ -154,6 +186,7 @@ const DialogBox = ({
         autoPlay
         controls
         style={{ display: "none" }}
+        onEnded={() => setUrlAudio("")}
       />
       <div className={classes.dialogTitle}>Quả gì?</div>
       {characterName === question ? (
@@ -168,46 +201,57 @@ const DialogBox = ({
               setMessageEnded(true);
             }}
           />
-          {!results ? (
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div style={{ marginTop: "30px" }}>
-                <input
-                  type="text"
-                  {...register("textInput")}
-                  placeholder="Nhập từ vừa nghe được"
-                  className={classes.input}
-                  style={{
-                    outline: "none",
-                    border: "none",
-                    borderRadius: "5px",
-                    height: "50px",
-                    fontWeight: "bolder",
-                    color: "tomato",
-                    textAlign: "center",
-                    fontSize: "25px",
-                  }}
-                />
-                <button type="submit" className={classes.buttonSubmit}>
-                  Kiểm tra +5
+          {/* {!result ? ( */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div style={{ marginTop: "30px" }}>
+              {!result ? (
+                <>
+                  <input
+                    type="text"
+                    {...register("textInput")}
+                    placeholder="Nhập từ vừa nghe được"
+                    className={classes.input}
+                    style={{
+                      outline: "none",
+                      border: "none",
+                      borderRadius: "5px",
+                      height: "50px",
+                      fontWeight: "bolder",
+                      color: "tomato",
+                      textAlign: "center",
+                      fontSize: "25px",
+                    }}
+                  />
+                  <button type="submit" className={classes.buttonSubmit}>
+                    Kiểm tra +5
+                  </button>
+                </>
+              ) : (
+                <span>{result}</span>
+              )}
+
+              {mic && (
+                <button
+                  type="button"
+                  className={classes.buttonSubmit}
+                  onClick={isRecording ? stopSpeechToText : startSpeechToText}
+                >
+                  <img src={isRecording ? unmic : micro} height={25} />
+                  {isRecording ? "" : "+5"}
                 </button>
-                <button type="button" className={classes.buttonSubmit}>
-                  <img src={micro} height={25} />
-                  +5
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div>{results}</div>
-          )}
+              )}
+              {text && <span style={{ marginLeft: "15px" }}>{text}</span>}
+            </div>
+          </form>
+          {/* ) : (
+            <div>{result}</div>
+          )} */}
         </>
       ) : (
         <div>Bạn đã chọn sai</div>
       )}
       <div onClick={handleClick} className={classes.dialogFooter}>
         Bỏ qua
-        {/* {currentMessage === messages.length - 1 && messageEnded
-          ? "Bỏ qua"
-          : "Next"} */}
       </div>
     </div>
   );
