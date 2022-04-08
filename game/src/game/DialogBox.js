@@ -99,6 +99,7 @@ const DialogBox = ({
   const [result, setResults] = useState("");
   const [urlAudio, setUrlAudio] = useState("");
   const [mic, setMic] = useState(true);
+  const [text, setText] = useState("");
   const classes = useStyles({
     width,
     height,
@@ -163,11 +164,17 @@ const DialogBox = ({
   }, []);
 
   useEffect(() => {
-    console.log(results[0]?.transcript?.toLowerCase());
-    if (results[0]?.transcript?.toLowerCase() == messages[0].answer) {
+    setText(results[results?.length - 1]?.transcript);
+    if (
+      results[results?.length - 1]?.transcript?.toLowerCase() ==
+      messages[0].answer
+    ) {
+      console.log(results[0]?.transcript?.toLowerCase());
       setHeroCoins((pre) => pre + 5);
       setUrlAudio(dungAudio);
       setMic(false);
+      stopSpeechToText();
+    } else {
       stopSpeechToText();
     }
   }, [results]);
@@ -179,6 +186,7 @@ const DialogBox = ({
         autoPlay
         controls
         style={{ display: "none" }}
+        onEnded={() => setUrlAudio("")}
       />
       <div className={classes.dialogTitle}>Quả gì?</div>
       {characterName === question ? (
@@ -193,52 +201,57 @@ const DialogBox = ({
               setMessageEnded(true);
             }}
           />
-          {!result ? (
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div style={{ marginTop: "30px" }}>
-                <input
-                  type="text"
-                  {...register("textInput")}
-                  placeholder="Nhập từ vừa nghe được"
-                  className={classes.input}
-                  style={{
-                    outline: "none",
-                    border: "none",
-                    borderRadius: "5px",
-                    height: "50px",
-                    fontWeight: "bolder",
-                    color: "tomato",
-                    textAlign: "center",
-                    fontSize: "25px",
-                  }}
-                />
-                <button type="submit" className={classes.buttonSubmit}>
-                  Kiểm tra +5
-                </button>
-                {mic && (
-                  <button
-                    type="button"
-                    className={classes.buttonSubmit}
-                    onClick={isRecording ? stopSpeechToText : startSpeechToText}
-                  >
-                    <img src={isRecording ? unmic : micro} height={25} />
-                    {isRecording ? "" : "+5"}
+          {/* {!result ? ( */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div style={{ marginTop: "30px" }}>
+              {!result ? (
+                <>
+                  <input
+                    type="text"
+                    {...register("textInput")}
+                    placeholder="Nhập từ vừa nghe được"
+                    className={classes.input}
+                    style={{
+                      outline: "none",
+                      border: "none",
+                      borderRadius: "5px",
+                      height: "50px",
+                      fontWeight: "bolder",
+                      color: "tomato",
+                      textAlign: "center",
+                      fontSize: "25px",
+                    }}
+                  />
+                  <button type="submit" className={classes.buttonSubmit}>
+                    Kiểm tra +5
                   </button>
-                )}
-              </div>
-            </form>
-          ) : (
+                </>
+              ) : (
+                <span>{result}</span>
+              )}
+
+              {mic && (
+                <button
+                  type="button"
+                  className={classes.buttonSubmit}
+                  onClick={isRecording ? stopSpeechToText : startSpeechToText}
+                >
+                  <img src={isRecording ? unmic : micro} height={25} />
+                  {isRecording ? "" : "+5"}
+                </button>
+              )}
+              {text && <span style={{ marginLeft: "15px" }}>{text}</span>}
+            </div>
+          </form>
+          {/* ) : (
             <div>{result}</div>
-          )}
+          )} */}
         </>
       ) : (
         <div>Bạn đã chọn sai</div>
       )}
       <div onClick={handleClick} className={classes.dialogFooter}>
         Bỏ qua
-        {/* {currentMessage === messages.length - 1 && messageEnded
-          ? "Bỏ qua"
-          : "Next"} */}
       </div>
     </div>
   );
